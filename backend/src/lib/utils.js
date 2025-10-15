@@ -11,7 +11,7 @@ export const generateToken = (userId, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         httpOnly: true, // JS can't access the cookie and protect against XSS attacks
         sameSite: "strict", // CSRF attacks protection
-        secure: process.env.NODE_ENV === "development" ? false : true, // only send cookie over HTTPS in production
+        secure: ENV.NODE_ENV === "development" ? false : true, // only send cookie over HTTPS in production
     });
 
     return token;
