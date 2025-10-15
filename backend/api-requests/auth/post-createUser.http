@@ -3,8 +3,8 @@ POST http://localhost:5001/api/auth/signup
 Content-Type: application/json
 
 {
-    "fullName": "Mr. Strange",
-    "email": "test@iway.com",
+    "fullName": "Stream User-Agent: Test",
+    "email": "test2@iway.com",
     "password": "securepassword123"
 }
 

@@ -1,6 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
+import { upsertStreamUser } from "../lib/stream.js";
 import { ENV } from "../lib/env.js";
 
 export const signup = async (req, res) => {
@@ -38,7 +39,15 @@ export const signup = async (req, res) => {
             profilePic: randomAvatar
         });
 
-        // TODO: CREATE THE USER IN STREAM AS WELL
+        try {
+            await upsertStreamUser({
+                id: newUser._id.toString(),
+                name: newUser.fullName,
+                image: newUser.profilePic || ""
+            })
+        } catch (error) {
+            console.log("Error upserting Stream user:", error);
+        }
 
         if (newUser) {
             const savedUser = await newUser.save();
