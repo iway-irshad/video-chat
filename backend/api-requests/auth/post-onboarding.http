@@ -1,0 +1,14 @@
+### POST request to onboard a user
+POST http://localhost:5001/api/auth/onboarding
+Content-Type: application/json
+
+{
+    "fullName": "Test",
+    "email": "test2@iway.com",
+    "bio": "Just a regular user",
+    "nativeLanguage": "English",
+    "learningLanguage": "Spanish",
+    "location": "USA"
+}
+
+###
