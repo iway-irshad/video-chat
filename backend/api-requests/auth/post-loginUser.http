@@ -1,0 +1,10 @@
+### POST request to login a user
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@iway.com",
+    "password": "securepassword123"
+}
+
+###
