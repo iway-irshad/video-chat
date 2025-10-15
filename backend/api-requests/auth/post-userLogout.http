@@ -1,0 +1,4 @@
+### POST request to logout a user
+POST http://localhost:5001/api/auth/logout
+
+###
