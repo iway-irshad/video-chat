@@ -1,0 +1,15 @@
+### GET request to fetch all friend requests (incoming, accepted, rejected)
+GET http://localhost:5001/api/users/friend-requests
+Cookie: jwt=YOUR_JWT_TOKEN_HERE
+
+### Description: Fetches all friend requests for the authenticated user:
+###   - incomingRequests: Pending requests you received (need to accept/reject)
+###   - acceptedRequests: Requests you accepted
+###   - rejectedRequests: Requests you rejected
+### Requires a valid JWT token.
+
+### Example with actual token
+GET http://localhost:5001/api/users/friend-requests
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGVmZWM2N2Y4MjViZmQwYTg3YTYzMDYiLCJpYXQiOjE3NjA2NDQwMDQsImV4cCI6MTc2MTI0ODgwNH0.u9NpOTh59Fmjr0LFfXwIgzWzs17Jm89H4uLl3S_8llw
+
+###
