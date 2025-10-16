@@ -1,0 +1,32 @@
+### GET request to generate Stream Chat token
+GET http://localhost:5001/api/chat/token
+Cookie: jwt=YOUR_JWT_TOKEN_HERE
+
+### Description: Generates a Stream Chat token for the authenticated user.
+### This token is used to connect to Stream Chat SDK on the frontend.
+### Requires a valid JWT token for authentication.
+
+### Example with actual token (User 1)
+GET http://localhost:5001/api/chat/token
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGVmZWM2N2Y4MjViZmQwYTg3YTYzMDYiLCJpYXQiOjE3NjA2NDQwMDQsImV4cCI6MTc2MTI0ODgwNH0.u9NpOTh59Fmjr0LFfXwIgzWzs17Jm89H4uLl3S_8llw
+
+### Example with actual token (User 2)
+GET http://localhost:5001/api/chat/token
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGYxMzU1ZTYxYmQ2N2U1ZmNlZjZlNWIiLCJpYXQiOjE3Mjk5ODQ1NzEsImV4cCI6MTczMDU4OTM3MX0.EfAZvH_zD6sxL1JKFdQM6bV3KhXeUiCx8YgA7VhZnHM
+
+###
+
+### Expected Response:
+### {
+###   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+### }
+
+### What is this token?
+### - This is a Stream Chat authentication token
+### - It's different from your JWT auth token
+### - Use it to connect to Stream Chat SDK
+### - Each user gets a unique token based on their user ID
+
+### Common Issues:
+### - 401 Unauthorized: JWT token is missing or expired
+### - 500 Internal Server Error: Check STREAM_API_KEY and STREAM_API_SECRET in .env file
