@@ -1,0 +1,15 @@
+### GET request to fetch outgoing friend requests (pending and rejected)
+GET http://localhost:5001/api/users/outgoing-friend-requests
+Cookie: jwt=YOUR_JWT_TOKEN_HERE
+
+### Description: Fetches all friend requests that YOU sent to others:
+###   - pendingRequests: Requests waiting for response
+###   - rejectedRequests: Requests that were rejected by others
+### This is how you know if someone rejected your friend request!
+### Requires a valid JWT token.
+
+### Example with actual token
+GET http://localhost:5001/api/users/outgoing-friend-requests
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGVmZWM2N2Y4MjViZmQwYTg3YTYzMDYiLCJpYXQiOjE3NjA2NDQwMDQsImV4cCI6MTc2MTI0ODgwNH0.u9NpOTh59Fmjr0LFfXwIgzWzs17Jm89H4uLl3S_8llw
+
+###

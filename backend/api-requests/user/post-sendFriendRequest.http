@@ -1,0 +1,13 @@
+### POST request to send a friend request
+POST http://localhost:5001/api/users/friend-request/RECIPIENT_USER_ID_HERE
+Content-Type: application/json
+Cookie: jwt=YOUR_JWT_TOKEN_HERE
+
+### Description: Sends a friend request to another user. Replace RECIPIENT_USER_ID_HERE with the actual user ID. Requires a valid JWT token.
+
+### Example with actual ID
+POST http://localhost:5001/api/users/friend-request/68efec67f825bfd0a87a6306
+Content-Type: application/json
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGYxMzU1ZTYxYmQ2N2U1ZmNlZjZlNWIiLCJpYXQiOjE3NjA2NDIzMjQsImV4cCI6MTc2MTI0NzEyNH0.RlyaA8_qjCBtHfhPykGZzlV1yU0n-a8f1ICgItkjDE4
+
+###

@@ -3,8 +3,8 @@ POST http://localhost:5001/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test@iway.com",
+    "email": "test2@iway.com",
     "password": "securepassword123"
 }
 
-###
+### Description: Logs in a user and returns a JWT token in an HTTP-only cookie.

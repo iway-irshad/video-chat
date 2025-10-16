@@ -1,0 +1,4 @@
+### GET request to fetch recommended users
+GET http://localhost:5001/api/users/recommends
+
+### Description: Fetches a list of recommended users for the authenticated user. Requires a valid JWT token.

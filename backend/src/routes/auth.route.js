@@ -10,6 +10,7 @@ router.post("/logout", logout);
 
 router.post("/onboarding", protectRoute, onboard);
 
+// Check authentication status
 router.get("/check-auth", protectRoute, (req, res) => res.status(200).json(req.user));
 
 export default router;

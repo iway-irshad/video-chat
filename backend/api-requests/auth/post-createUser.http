@@ -3,9 +3,9 @@ POST http://localhost:5001/api/auth/signup
 Content-Type: application/json
 
 {
-    "fullName": "Stream User-Agent: Test",
-    "email": "test2@iway.com",
-    "password": "securepassword123"
+    "fullName": "Test User5",
+    "email": "test5@iway.com",
+    "password": "securepassword1234"
 }
 
-###
+### Description: Creates a new user account with the provided details. Expects fullName, email, and password in the request body.

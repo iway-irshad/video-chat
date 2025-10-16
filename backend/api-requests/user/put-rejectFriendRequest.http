@@ -1,0 +1,6 @@
+### PUT request to reject a friend request
+PUT http://localhost:5001/api/users/friend-request/68f14e40b9e593acac8f29a9/reject
+Content-Type: application/json
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGVmZWM2N2Y4MjViZmQwYTg3YTYzMDYiLCJpYXQiOjE3NjA2NDQwMDQsImV4cCI6MTc2MTI0ODgwNH0.u9NpOTh59Fmjr0LFfXwIgzWzs17Jm89H4uLl3S_8llw
+
+### Description: Rejects a friend request. Replace FRIEND_REQUEST_ID_HERE with the actual friend request ID. Requires a valid JWT token.

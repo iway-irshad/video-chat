@@ -1,0 +1,6 @@
+### GET request to fetch friends
+GET http://localhost:5001/api/users/friends
+
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGVmZWM2N2Y4MjViZmQwYTg3YTYzMDYiLCJpYXQiOjE3NjA2NDQwMDQsImV4cCI6MTc2MTI0ODgwNH0.u9NpOTh59Fmjr0LFfXwIgzWzs17Jm89H4uLl3S_8llw
+
+### Description: Fetches a list of friends for the authenticated user. Requires a valid JWT token.
