@@ -38,8 +38,8 @@ const LoginPage = () => {
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           {/* LOGO */}
           <div className="mb-4 flex items-center justify-start gap-2">
-            <ShipWheelIcon className="size-9 text-primary" />
-            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
+            <ShipWheelIcon className="size-10 text-primary" />
+            <span className="text-4xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
               Streamify
             </span>
           </div>
@@ -51,12 +51,12 @@ const LoginPage = () => {
             </div>
           )}
 
-          <div className="w-full">
+          <div className="w-full pt-3">
             <form onSubmit={handleLogin}>
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold">Welcome Back</h2>
-                  <p className="text-sm opacity-70">
+                  <h2 className="text-3xl font-semibold">Welcome Back</h2>
+                  <p className=" opacity-70">
                     Sign in to your account to continue your language journey
                   </p>
                 </div>
@@ -76,7 +76,7 @@ const LoginPage = () => {
                     />
                   </div>
 
-                  <div className="form-control w-full space-y-2">
+                  <div className="form-control w-full space-y-2 pb-2">
                     <label className="label">
                       <span className="label-text">Password</span>
                     </label>
@@ -101,7 +101,7 @@ const LoginPage = () => {
                     )}
                   </button>
 
-                  <div className="text-center mt-4">
+                  <div className="text-center">
                     <p className="text-sm">
                       Don't have an account?{" "}
                       <Link to="/signup" className="text-primary hover:underline">
