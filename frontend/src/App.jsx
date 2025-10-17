@@ -9,25 +9,15 @@ import ChatPage from './pages/ChatPage.jsx';
 import CallPage from './pages/CallPage.jsx';
 import OnboardingPage from './pages/OnboardingPage.jsx';
 
-import { useQuery } from '@tanstack/react-query';
-
-import { axiosInstance } from './lib/axios.js';
+import PageLoader from './components/PageLoader.jsx';
+import useAuthUser from './hooks/useAuthUser.js';
 
 const App = () => {
   
-  const { data: authData, isLoading, error } = useQuery({
-    queryKey: ["authUser"],
+  const { isLoading, authUser } = useAuthUser();
 
-    queryFn: async () => {
-      const response = await axiosInstance.get('/auth/check-auth');
-      return response.data;
-    },
-    retry: false, // auth check should not retry
-  }); 
-
-  const authUser = authData?.user;
-
-
+  if (isLoading) return <PageLoader />;
+  
   return (
     <div className='h-screen flex flex-col' data-theme='coffee'>
 
