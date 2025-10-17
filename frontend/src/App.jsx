@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import HomePage from './pages/HomePage.jsx';
 import SignUpPage from './pages/SignUpPage.jsx';
@@ -9,13 +9,31 @@ import ChatPage from './pages/ChatPage.jsx';
 import CallPage from './pages/CallPage.jsx';
 import OnboardingPage from './pages/OnboardingPage.jsx';
 
+import { useQuery } from '@tanstack/react-query';
+
+import { axiosInstance } from './lib/axios.js';
+
 const App = () => {
-  console.log('App component rendering');
   
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["todos"],
+
+    queryFn: async () => {
+      const response = await axiosInstance.get('/auth/check-auth');
+      return response.data;
+    }
+  }); 
+  console.log(data);
   return (
-    <div className='h-screen flex flex-col' data-theme='forest'>
-      <button className='btn bg-slate-200 text-yellow-700' onClick={() => toast.success('Toast created!')}>Create a toast</button>
+    <div className='h-screen flex flex-col' data-theme='light'>
       
+      {/* Debug Info */}
+      <div className='p-4 bg-blue-900 text-white'>
+        <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
+        <p>Error: {error ? error.message : 'None'}</p>
+        <p>Data Items: {data ? data.length : 0}</p>
+      </div>
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
@@ -25,7 +43,9 @@ const App = () => {
         <Route path="/call" element={<CallPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
       </Routes>
+
       <Toaster />
+
     </div>
   );
 };
