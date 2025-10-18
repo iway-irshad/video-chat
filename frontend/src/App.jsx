@@ -13,10 +13,12 @@ import PageLoader from './components/PageLoader.jsx';
 import useAuthUser from './hooks/useAuthUser.js';
 import Layout from './components/Layout.jsx';
 import FriendsPage from './pages/FriendsPage.jsx';
+import { useThemeStore } from './store/useThemeStore.js';
 
 const App = () => {
   
   const { isLoading, authUser } = useAuthUser();
+  const { theme } = useThemeStore();
 
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
@@ -24,7 +26,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
   
   return (
-    <div className='h-screen flex flex-col' data-theme='coffee'>
+    <div className='h-screen flex flex-col' data-theme={theme}>
 
       <Routes>
       <Route
