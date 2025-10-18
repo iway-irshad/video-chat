@@ -1,19 +1,14 @@
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
-import { BellIcon, LogOutIcon, ShipWheelIcon } from "lucide-react";
+import { LogOutIcon, ShipWheelIcon, UserXIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
+import NotificationBell from "./NotificationBell";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const isChatPage = location.pathname?.startsWith("/chat");
-
-  // const queryClient = useQueryClient();
-  // const { mutate: logoutMutation } = useMutation({
-  //   mutationFn: logout,
-  //   onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  // });
 
   const { logoutMutation } = useLogout();
 
@@ -34,20 +29,27 @@ const Navbar = () => {
           )}
 
           <div className="flex items-center gap-3 sm:gap-4 ml-auto">
-            <Link to={"/notifications"}>
-              <button className="btn btn-ghost btn-circle">
-                <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-              </button>
-            </Link>
+            <NotificationBell />
           </div>
 
           {/* TODO */}
           <ThemeSelector />
 
-          <div className="avatar">
-            <div className="w-9 rounded-full">
-              <img src={authUser?.profilePic} alt="User Avatar" />
+          {/* Profile Dropdown */}
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="avatar cursor-pointer">
+              <div className="w-9 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img src={authUser?.profilePic} alt="User Avatar" />
+              </div>
             </div>
+            <ul tabIndex={0} className="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow-lg mt-3">
+              <li>
+                <Link to="/rejected-requests" className="flex items-center gap-2">
+                  <UserXIcon className="h-4 w-4" />
+                  Rejected Requests
+                </Link>
+              </li>
+            </ul>
           </div>
 
           {/* Logout button */}

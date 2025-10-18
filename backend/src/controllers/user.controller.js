@@ -6,11 +6,31 @@ export async function getRecommendedUsers(req, res) {
         const currentUserId = req.user._id;
         const currentUser = req.user;
 
+        // Get all friend requests involving the current user (in either direction)
+        const allFriendRequests = await FriendRequest.find({
+            $or: [
+                { sender: currentUserId },
+                { recipient: currentUserId }
+            ]
+        });
+
+        // Extract all user IDs from these requests (both senders and recipients)
+        const usersWithExistingRequests = new Set();
+        allFriendRequests.forEach(req => {
+            usersWithExistingRequests.add(req.sender.toString());
+            usersWithExistingRequests.add(req.recipient.toString());
+        });
+        // Remove current user from the set
+        usersWithExistingRequests.delete(currentUserId.toString());
+
+        // Convert Set to Array for MongoDB query
+        const excludedUserIds = Array.from(usersWithExistingRequests);
+
         const recommendedUser = await User.find({
             $and: [
                 { _id: { $ne: currentUserId } }, // Exclude current user
                 { _id: { $nin: currentUser.friends } }, // Exclude existing friends
-                { _id: { $nin: currentUser.friendRequests } }, // Exclude users with pending friend requests
+                { _id: { $nin: excludedUserIds } }, // Exclude users with ANY friend request history
                 { isOnboarded: true } // Only include onboarded users
             ]
         })
@@ -104,10 +124,8 @@ export async function acceptFriendRequest(req, res) {
             return res.status(400).json({ message: "This friend request has already been accepted." });
         }
 
-        // Check if already rejected
-        if (friendRequest.status === "rejected") {
-            return res.status(400).json({ message: "Cannot accept a rejected friend request." });
-        }
+        // Allow accepting rejected requests - don't block them anymore
+        // User can change their mind and accept a previously rejected request
 
         // Update the friend request status to 'accepted'
         friendRequest.status = "accepted";
@@ -139,19 +157,31 @@ export async function getFriendRequests(req, res) {
             .populate("sender", "fullName profilePic nativeLanguage learningLanguage") // Populate sender details
             .sort({ createdAt: -1 }); // Sort by most recent
         
+        // Get accepted requests from BOTH sides:
+        // 1. Requests you received and accepted
+        // 2. Requests you sent that were accepted by others
         const acceptedRequests = await FriendRequest.find({
-            recipient: req.user._id,
-            status: "accepted"
+            $or: [
+                { recipient: req.user._id, status: "accepted" },  // You accepted their request
+                { sender: req.user._id, status: "accepted" }      // They accepted your request
+            ]
         })
             .populate("sender", "fullName profilePic") // Populate sender details
-            .sort({ createdAt: -1 }); // Sort by most recent
+            .populate("recipient", "fullName profilePic") // Populate recipient details
+            .sort({ updatedAt: -1 }); // Sort by most recently accepted
 
+        // Get rejected requests from BOTH sides:
+        // 1. Requests you received and rejected
+        // 2. Requests you sent that were rejected by others
         const rejectedRequests = await FriendRequest.find({
-            recipient: req.user._id,
-            status: "rejected"
+            $or: [
+                { recipient: req.user._id, status: "rejected" },  // You rejected their request
+                { sender: req.user._id, status: "rejected" }      // They rejected your request
+            ]
         })
             .populate("sender", "fullName profilePic") // Populate sender details
-            .sort({ createdAt: -1 }); // Sort by most recent
+            .populate("recipient", "fullName profilePic") // Populate recipient details
+            .sort({ updatedAt: -1 }); // Sort by most recently rejected
 
         res.status(200).json({ 
             incomingRequests, 
@@ -221,6 +251,34 @@ export async function rejectFriendRequest(req, res) {
 
     } catch (error) {
         console.error("Error in rejectFriendRequest controller:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function getRejectedFriendRequests(req, res) {
+    try {
+        // Requests that I received and rejected (I can still accept these)
+        const rejectedByMe = await FriendRequest.find({
+            recipient: req.user._id,
+            status: "rejected"
+        })
+            .populate("sender", "fullName profilePic nativeLanguage learningLanguage")
+            .sort({ updatedAt: -1 });
+
+        // Requests that I sent but others rejected
+        const rejectedByOthers = await FriendRequest.find({
+            sender: req.user._id,
+            status: "rejected"
+        })
+            .populate("recipient", "fullName profilePic nativeLanguage learningLanguage")
+            .sort({ updatedAt: -1 });
+
+        res.status(200).json({
+            rejectedByMe,
+            rejectedByOthers
+        });
+    } catch (error) {
+        console.error("Error in getRejectedFriendRequests controller:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }

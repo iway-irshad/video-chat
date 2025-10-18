@@ -1,0 +1,3 @@
+### Get Rejected Friend Requests
+GET http://localhost:5001/api/users/rejected-friend-requests
+Content-Type: application/json
