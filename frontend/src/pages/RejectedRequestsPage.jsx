@@ -30,8 +30,8 @@ const RejectedRequestsPage = () => {
     },
   });
 
-  const rejectedByMe = rejectedData?.rejectedByMe || [];
-  const rejectedByOthers = rejectedData?.rejectedByOthers || [];
+  const rejectedByMe = rejectedData?.rejectedByMe?.filter(req => req.sender) || [];
+  const rejectedByOthers = rejectedData?.rejectedByOthers?.filter(req => req.recipient) || [];
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -59,45 +59,48 @@ const RejectedRequestsPage = () => {
                 </p>
 
                 <div className="space-y-3">
-                  {rejectedByMe.map((request) => (
-                    <div
-                      key={request._id}
-                      className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="card-body p-4">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3">
-                            <div className="avatar w-14 h-14 rounded-full bg-base-300">
-                              <img
-                                src={request.sender.profilePic}
-                                alt={request.sender.fullName}
-                              />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold">{request.sender.fullName}</h3>
-                              <div className="flex flex-wrap gap-1.5 mt-1">
-                                <span className="badge badge-secondary badge-sm">
-                                  Native: {capitalize(request.sender.nativeLanguage)}
-                                </span>
-                                <span className="badge badge-outline badge-sm">
-                                  Learning: {capitalize(request.sender.learningLanguage)}
-                                </span>
+                  {rejectedByMe.map((request) => {
+                    if (!request.sender) return null;
+                    return (
+                      <div
+                        key={request._id}
+                        className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="card-body p-4">
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                              <div className="avatar w-14 h-14 rounded-full bg-base-300">
+                                <img
+                                  src={request.sender.profilePic}
+                                  alt={request.sender.fullName}
+                                />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">{request.sender.fullName}</h3>
+                                <div className="flex flex-wrap gap-1.5 mt-1">
+                                  <span className="badge badge-secondary badge-sm">
+                                    Native: {capitalize(request.sender.nativeLanguage)}
+                                  </span>
+                                  <span className="badge badge-outline badge-sm">
+                                    Learning: {capitalize(request.sender.learningLanguage)}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <button
-                            className="btn btn-primary btn-sm"
-                            onClick={() => acceptRequestMutation(request._id)}
-                            disabled={isPending}
-                          >
-                            <UserCheckIcon className="size-4" />
-                            Accept Now
-                          </button>
+                            <button
+                              className="btn btn-primary btn-sm"
+                              onClick={() => acceptRequestMutation(request._id)}
+                              disabled={isPending}
+                            >
+                              <UserCheckIcon className="size-4" />
+                              Accept Now
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -115,24 +118,27 @@ const RejectedRequestsPage = () => {
                 </p>
 
                 <div className="space-y-3">
-                  {rejectedByOthers.map((request) => (
-                    <div key={request._id} className="card bg-base-200 shadow-sm opacity-60">
-                      <div className="card-body p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="avatar w-14 h-14 rounded-full bg-base-300">
-                            <img
-                              src={request.recipient.profilePic}
-                              alt={request.recipient.fullName}
-                            />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">{request.recipient.fullName}</h3>
-                            <p className="text-sm opacity-70">Rejected your request</p>
+                  {rejectedByOthers.map((request) => {
+                    if (!request.recipient) return null;
+                    return (
+                      <div key={request._id} className="card bg-base-200 shadow-sm opacity-60">
+                        <div className="card-body p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="avatar w-14 h-14 rounded-full bg-base-300">
+                              <img
+                                src={request.recipient.profilePic}
+                                alt={request.recipient.fullName}
+                              />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold">{request.recipient.fullName}</h3>
+                              <p className="text-sm opacity-70">Rejected your request</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
