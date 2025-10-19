@@ -1,53 +1,11 @@
 import { Link } from "react-router";
 import { BellIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { getFriendRequests, getOutgoingFriendRequests } from "../lib/api";
-import { useState, useEffect } from "react";
+import { useNotifications } from "../hooks/useNotifications";
 
 const NotificationBell = () => {
-  const [clickedNotifications, setClickedNotifications] = useState(new Set());
+  const { allNotifications } = useNotifications();
 
-  // Load clicked notifications from localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('clickedNotifications');
-      if (saved) {
-        setClickedNotifications(new Set(JSON.parse(saved)));
-      }
-    } catch (error) {
-      console.error('Failed to load clicked notifications:', error);
-    }
-  }, []);
-
-  // Fetch notification data
-  const { data: friendRequests } = useQuery({
-    queryKey: ["friendRequests"],
-    queryFn: getFriendRequests,
-    refetchOnWindowFocus: true,
-    staleTime: 30000, // Cache for 30 seconds
-  });
-
-  const { data: outgoingRequests } = useQuery({
-    queryKey: ["outgoingFriendRequests"],
-    queryFn: getOutgoingFriendRequests,
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
-  });
-
-  // Calculate unread notification count
-  const incomingRequests = friendRequests?.incomingRequests || [];
-  const acceptedRequests = friendRequests?.acceptedRequests || [];
-  const rejectedRequests = friendRequests?.rejectedRequests || [];
-  const pendingOutgoingRequests = outgoingRequests?.pendingRequests || [];
-
-  const allNotificationIds = [
-    ...incomingRequests.map(r => r._id),
-    ...acceptedRequests.map(r => r._id),
-    ...rejectedRequests.map(r => r._id),
-    ...pendingOutgoingRequests.map(r => r._id),
-  ];
-
-  const unreadCount = allNotificationIds.filter(id => !clickedNotifications.has(id)).length;
+  const unreadCount = allNotifications.length;
 
   return (
     <Link to={"/notifications"}>
@@ -64,3 +22,4 @@ const NotificationBell = () => {
 };
 
 export default NotificationBell;
+

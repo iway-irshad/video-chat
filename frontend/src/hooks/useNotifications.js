@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
   getFriendRequests, 
@@ -10,7 +10,6 @@ import {
 export const useNotifications = () => {
   const queryClient = useQueryClient();
   
-  // Persist clicked notifications in localStorage
   const [clickedNotifications, setClickedNotifications] = useState(() => {
     try {
       const saved = localStorage.getItem('clickedNotifications');
@@ -20,7 +19,6 @@ export const useNotifications = () => {
     }
   });
 
-  // Save to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('clickedNotifications', JSON.stringify([...clickedNotifications]));
@@ -29,7 +27,6 @@ export const useNotifications = () => {
     }
   }, [clickedNotifications]);
 
-  // Fetch notifications
   const { data: friendRequests, isLoading } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendRequests,
@@ -69,13 +66,11 @@ export const useNotifications = () => {
     },
   });
 
-  // Extract notification arrays
   const incomingRequests = friendRequests?.incomingRequests || [];
   const acceptedRequests = friendRequests?.acceptedRequests || [];
   const rejectedRequests = friendRequests?.rejectedRequests || [];
   const pendingOutgoingRequests = outgoingRequests?.pendingRequests || [];
 
-  // Clean up localStorage
   useEffect(() => {
     if (!friendRequests || !outgoingRequests) return;
 
@@ -86,40 +81,54 @@ export const useNotifications = () => {
       ...pendingOutgoingRequests.map(r => r._id),
     ]);
 
-    const validClickedIds = [...clickedNotifications].filter(id => 
-      allCurrentNotificationIds.has(id)
-    );
+    setClickedNotifications(prevClicked => {
+      const validClickedIds = [...prevClicked].filter(id => 
+        allCurrentNotificationIds.has(id)
+      );
 
-    if (validClickedIds.length !== clickedNotifications.size) {
-      setClickedNotifications(new Set(validClickedIds));
-    }
-  }, [friendRequests, outgoingRequests, incomingRequests, acceptedRequests, rejectedRequests, pendingOutgoingRequests, clickedNotifications]);
+      if (validClickedIds.length !== prevClicked.size) {
+        return new Set(validClickedIds);
+      }
+      return prevClicked;
+    });
+  }, [friendRequests, outgoingRequests, incomingRequests, acceptedRequests, rejectedRequests, pendingOutgoingRequests]);
 
-  // Combine and sort all notifications
-  const allNotifications = [
-    ...incomingRequests.map(req => ({ 
-      ...req, 
-      notificationType: 'incoming', 
-      timestamp: new Date(req.createdAt) 
-    })),
-    ...pendingOutgoingRequests.map(req => ({ 
-      ...req, 
-      notificationType: 'outgoing', 
-      timestamp: new Date(req.createdAt) 
-    })),
-    ...rejectedRequests.map(req => ({ 
-      ...req, 
-      notificationType: 'rejected', 
-      timestamp: new Date(req.updatedAt || req.createdAt) 
-    })),
-    ...acceptedRequests.map(req => ({ 
-      ...req, 
-      notificationType: 'accepted', 
-      timestamp: new Date(req.updatedAt || req.createdAt) 
-    }))
-  ]
-    .filter(notification => !clickedNotifications.has(notification._id))
-    .sort((a, b) => b.timestamp - a.timestamp);
+  const allNotifications = React.useMemo(() => {
+    const notifications = [
+      ...incomingRequests
+        .filter(req => req.sender)
+        .map(req => ({ 
+          ...req, 
+          notificationType: 'incoming', 
+          timestamp: new Date(req.createdAt) 
+        })),
+      ...pendingOutgoingRequests
+        .filter(req => req.recipient)
+        .map(req => ({ 
+          ...req, 
+          notificationType: 'outgoing', 
+          timestamp: new Date(req.createdAt) 
+        })),
+      ...rejectedRequests
+        .filter(req => req.sender && req.recipient)
+        .map(req => ({ 
+          ...req, 
+          notificationType: 'rejected', 
+          timestamp: new Date(req.updatedAt || req.createdAt) 
+        })),
+      ...acceptedRequests
+        .filter(req => req.sender && req.recipient)
+        .map(req => ({ 
+          ...req, 
+          notificationType: 'accepted', 
+          timestamp: new Date(req.updatedAt || req.createdAt) 
+        }))
+    ]
+      .filter(notification => !clickedNotifications.has(notification._id))
+      .sort((a, b) => b.timestamp - a.timestamp);
+    
+    return notifications;
+  }, [incomingRequests, pendingOutgoingRequests, rejectedRequests, acceptedRequests, clickedNotifications]);
 
   const markAsClicked = (notificationId) => {
     setClickedNotifications(prev => new Set(prev).add(notificationId));

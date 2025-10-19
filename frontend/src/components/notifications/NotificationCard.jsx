@@ -12,6 +12,10 @@ const NotificationCard = ({
   isAccepting, 
   isRejecting 
 }) => {
+  if (!notification || !notification.sender || !authUser) {
+    return null;
+  }
+
   switch (notification.notificationType) {
     case 'incoming':
       return (
@@ -26,6 +30,7 @@ const NotificationCard = ({
       );
 
     case 'outgoing':
+      if (!notification.recipient) return null;
       return (
         <OutgoingRequestCard
           notification={notification}
@@ -34,6 +39,7 @@ const NotificationCard = ({
       );
 
     case 'rejected': {
+      if (!notification.sender || !notification.recipient) return null;
       const isSender = notification.sender._id === authUser?._id;
       const otherPerson = isSender ? notification.recipient : notification.sender;
       const message = isSender 
@@ -51,6 +57,7 @@ const NotificationCard = ({
     }
 
     case 'accepted': {
+      if (!notification.sender || !notification.recipient) return null;
       const isSender = notification.sender._id === authUser?._id;
       const otherPerson = isSender ? notification.recipient : notification.sender;
       const message = isSender 

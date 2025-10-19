@@ -68,3 +68,8 @@ export async function getRejectedFriendRequests() {
   const response = await axiosInstance.get("/users/rejected-friend-requests");
   return response.data;
 }
+
+export async function getStreamToken() {
+  const response = await axiosInstance.get("/chat/token");
+  return response.data;
+}
